@@ -1,6 +1,5 @@
-package main
-
 /*
+package main
 import (
 	"database/sql"
 	"fmt"

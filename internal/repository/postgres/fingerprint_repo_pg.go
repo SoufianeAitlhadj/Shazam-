@@ -32,41 +32,49 @@ func InsertFingerprints(db *sql.DB, songID int, fps []fingerprint.Fingerprint) e
 	return tx.Commit()
 }
 
+package postgres
+
+import (
+	"database/sql"
+	"fmt"
+	"strings"
+
+	"shazam/internal/fingerprint"
+)
+
 func FindMatches(db *sql.DB, queryFP []fingerprint.Fingerprint) (int, error) {
 
-	scores := make(map[int]int)
+	if len(queryFP) == 0 {
+		return 0, nil
+	}
 
+	// Collect unique hashes
+	hashSet := make(map[int64]struct{})
 	for _, fp := range queryFP {
-
-		rows, err := db.Query(
-			`SELECT song_id FROM fingerprints WHERE hash = $1`,
-			fp.Hash,
-		)
-		if err != nil {
-			return 0, err
-		}
-
-		for rows.Next() {
-			var songID int
-			if err := rows.Scan(&songID); err != nil {
-				rows.Close()
-				return 0, err
-			}
-			scores[songID]++
-		}
-		rows.Close()
+		hashSet[fp.Hash] = struct{}{}
 	}
 
-	// find best match
-	bestSongID := 0
-	maxScore := 0
-
-	for songID, score := range scores {
-		if score > maxScore {
-			maxScore = score
-			bestSongID = songID
-		}
+	var hashes []string
+	for h := range hashSet {
+		hashes = append(hashes, fmt.Sprintf("%d", h))
 	}
 
-	return bestSongID, nil
+	query := fmt.Sprintf(`
+		SELECT song_id, COUNT(*) as match_count
+		FROM fingerprints
+		WHERE hash IN (%s)
+		GROUP BY song_id
+		ORDER BY match_count DESC
+		LIMIT 1
+	`, strings.Join(hashes, ","))
+
+	var songID int
+	var count int
+
+	err := db.QueryRow(query).Scan(&songID, &count)
+	if err != nil {
+		return 0, nil
+	}
+
+	return songID, nil
 }
