@@ -26,7 +26,6 @@ func Extract(samples []float64, sampleRate int) []Fingerprint {
 	for i := 0; i+windowSize < len(samples); i += hopSize {
 
 		window := samples[i : i+windowSize]
-
 		coeffs := fft.Coefficients(nil, window)
 
 		maxMag := 0.0
