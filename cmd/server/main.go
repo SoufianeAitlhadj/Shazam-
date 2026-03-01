@@ -10,24 +10,22 @@ import (
 )
 
 func main() {
-	// Database connection string
+	//configuration
 	connStr := "host=localhost port=5432 user=postgres dbname=songs_db sslmode=disable"
+	port := ":8080"
 
-	// Connect to DB
+	//database Initialization
 	db := postgres.NewDB(connStr)
 	defer db.Close()
 
-	// Ensure tables + indexes exist
 	postgres.RunMigrations(db)
 
-	// Register routes
+	//HTTP Routing
 	http.HandleFunc("/", web.UploadHandler(db))
 
-	fmt.Println("🚀 Shazam server running at http://localhost:8080")
+	//start Server
+	fmt.Println("Shazam server running on port", port)
+	fmt.Println("Open http://localhost" + port)
 
-	// Start HTTP server
-	err := http.ListenAndServe(":8080", nil)
-	if err != nil {
-		log.Fatal("Server failed:", err)
-	}
+	log.Fatal(http.ListenAndServe(port, nil))
 }
