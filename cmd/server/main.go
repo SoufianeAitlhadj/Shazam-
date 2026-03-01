@@ -23,7 +23,7 @@ func main() {
 	//I did this just to clear old data before indexing (safe for MVP)
 	clearDatabase(db)
 
-	songsDir := "./songs"
+	songsDir := "./songs/wav_songs"
 
 	files, err := os.ReadDir(songsDir)
 	if err != nil {
@@ -132,6 +132,10 @@ func main() {
 	}
 
 	fmt.Println("✅ Database indexing complete")
+
+	var count int
+	db.QueryRow("SELECT COUNT(*) FROM songs").Scan(&count)
+	fmt.Println("Songs currently in DB:", count)
 }
 
 func clearDatabase(db *sql.DB) {
