@@ -23,6 +23,7 @@ This implementation is a **simplified tweak of the real Shazam algorithm**, as i
 ## 🎬 Demo
 
 ▶ [Watch the demo video](./demo_video.mp4)
+if not working, use this: https://youtu.be/B8SyA4M7y04
 
 ## 🧠 How It Works
 
