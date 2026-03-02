@@ -1,4 +1,5 @@
-# 🎧 Shazam MVP – Audio Fingerprinting & Recognition System
+# Shazoom - a shazam clone 
+## Audio Fingerprinting & Recognition System
 
 ## 📌 Overview
 
