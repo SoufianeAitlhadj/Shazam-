@@ -1,5 +1,5 @@
-/*
-package main
+/*package main
+
 import (
 	"database/sql"
 	"fmt"
@@ -144,5 +144,4 @@ func clearDatabase(db *sql.DB) {
 		log.Fatal("Failed to clear database:", err)
 	}
 	fmt.Println("🧹 Database cleared")
-}
-*/
+}*/
